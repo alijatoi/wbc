@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify, send_from_directory
 import subprocess
 
@@ -24,4 +25,5 @@ def run_code():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Use the environment variable `PORT`, or default to 5000
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
