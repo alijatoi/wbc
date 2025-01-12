@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Compiler</title>
+    <style>
+        /* Embedded CSS */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.5em;
+            border-radius: 8px 8px 0 0;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 1em;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #4CAF50;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 1em;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #runButton {
+            background-color: #4CAF50;
+        }
+
+        #runButton:hover {
+            background-color: #45a049;
+        }
+
+        #clearButton {
+            background-color: #f22336;
+        }
+
+        #clearButton:hover {
+            background-color: #e53935;
+        }
+
+        .output-section {
+            margin-top: 20px;
+        }
+
+        .output-section h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        #output {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            min-height: 100px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Python Code Compiler</h1>
+        </header>
+        <main>
+            <textarea id="codeInput" placeholder="Write your Python code here..."></textarea>
+            <div class="buttons">
+                <button id="runButton">Run Code</button>
+                <button id="clearButton">Clear</button>
+            </div>
+            <div class="output-section">
+                <h2>Output:</h2>
+                <pre id="output"></pre>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // JavaScript for button functionality
+        document.getElementById('runButton').addEventListener('click', async () => {
+            const code = document.getElementById('codeInput').value;
+            const outputDiv = document.getElementById('output');
+            outputDiv.textContent = "Running...";
+
+            try {
+                const response = await fetch('/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    outputDiv.textContent = data.output || "No output.";
+                } else {
+                    outputDiv.textContent = `Error: ${data.error}`;
+                }
+            } catch (err) {
+                outputDiv.textContent = "Failed to connect to the server.";
+            }
+        });
+
+        document.getElementById('clearButton').addEventListener('click', () => {
+            document.getElementById('codeInput').value = '';
+            document.getElementById('output').textContent = '';
+        });
+    </script>
+</body>
+</html>
